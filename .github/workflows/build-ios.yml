@@ -1,0 +1,40 @@
+YAML
+name: Build iOS App
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install Dependencies & Init Capacitor
+      run: |
+        npm install
+        npx cap init "CreaturesCornhole" "com.creatures.cornhole" --web-dir "www"
+        npx cap add ios
+
+    - name: Build Capacitor Copy
+      run: npx cap copy ios
+
+    - name: Build Xcode Project
+      run: |
+        cd ios/App
+        xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO
+
+    - name: Upload iOS App Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: CreaturesCornhole-iOS-Build
+        path: ios/App/build/Release-iphoneos/
