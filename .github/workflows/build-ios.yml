@@ -1,4 +1,3 @@
-YAML
 name: Build iOS App
 
 on: workflow_dispatch
