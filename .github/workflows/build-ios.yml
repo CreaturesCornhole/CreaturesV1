@@ -1,9 +1,6 @@
 YAML
 name: Build iOS App
-
-on:
-  workflow_dispatch:
-
+on: workflow_dispatch
 jobs:
   build:
     runs-on: macos-latest
@@ -12,11 +9,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: |
-          npm install
-          npx cap init "CreaturesCornhole" "com.creatures.cornhole" --web-dir "www"
-          npx cap add ios
-          npx cap copy ios
+      - run: npm install
+      - run: npx cap init "CreaturesCornhole" "com.creatures.cornhole" --web-dir "www"
+      - run: npx cap add ios
+      - run: npx cap copy ios
       - run: |
           cd ios/App
           xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
